@@ -255,11 +255,14 @@ function handleContactForm(event) {
     }
     
     // Email validation
-    const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
-    if (!emailRegex.test(data.email)) {
-        showNotification('Please enter a valid email address.', 'error');
-        return;
-    }
+        // Email validation
+const email = data.email.trim(); // remove spaces
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+if (!emailRegex.test(email)) {
+    showNotification('Please enter a valid email address.', 'error');
+    return;
+}
     
     // Show loading state
     const submitButton = document.getElementById('submitButton');
