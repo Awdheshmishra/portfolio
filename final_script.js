@@ -1,421 +1,173 @@
-// ========================================
-// PORTFOLIO JAVASCRIPT - Awdhesh Mishra
-// Complete functionality for HTML portfolio
-// ========================================
+const { useEffect, useState } = React;
 
-// Projects Data
+const profile = {
+  github: "https://github.com/Awdheshmishra",
+  linkedin: "https://www.linkedin.com/in/awdhesh-mishra-09780932a",
+  leetcode: "https://leetcode.com/u/awdheshmishra/",
+  portfolio: "https://awdheshmishra.netlify.app/",
+  resume: "awdheshmishra.pdf",
+  email: "awdheshmishra310@gmail.com",
+  phone: "+91-6388573740",
+};
+
 const projects = [
-    {
-        id: 1,
-        title: "Bharat Blood Tracker",
-        description: "A blood donation tracking system to help donors and receivers connect easily. Built with Java and HTML with database integration concepts.",
-        date: "2025",
-        technologies: ["Java", "HTML", "Database Integration"],
-        githubUrl: "https://github.com/Awdheshmishra",
-        liveUrl: "#",
-        imageUrl: "https://images.unsplash.com/photo-1615461066841-6116e61058f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-        features: ["Donor Registration", "Blood Request Management", "Location-based Search", "Real-time Notifications"]
-    },
-    {
-        id: 2,
-        title: "Fake News Detector",
-        description: "Machine learning-based classifier to detect fake vs real news using text preprocessing, NLP basics, and model evaluation techniques.",
-        date: "August 2025",
-        technologies: ["Python", "Machine Learning", "NLP", "Data Analysis"],
-        githubUrl: "https://github.com/Awdheshmishra",
-        liveUrl: "#",
-        imageUrl: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-        features: ["Text Preprocessing", "ML Classification", "Dataset Handling", "Model Evaluation"]
-    },
-    {
-        id: 3,
-        title: "LeetCode Streak Tracker",
-        description: "Python script that scrapes daily progress from LeetCode and shows notifications to maintain coding consistency.",
-        date: "September 2025",
-        technologies: ["Python", "Web Scraping", "BeautifulSoup", "Automation"],
-        githubUrl: "https://github.com/Awdheshmishra",
-        liveUrl: "#",
-        imageUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-        features: ["Progress Tracking", "Web Scraping", "Notifications", "Schedule Management"]
-    },
-    {
-        id: 4,
-        title: "Birthday-Themed Responsive Website",
-        description: "Fun, interactive responsive website featuring 3D flip animations and modern web technologies for an engaging user experience.",
-        date: "August 2025",
-        technologies: ["HTML", "CSS", "JavaScript", "3D Animations"],
-        githubUrl: "https://github.com/Awdheshmishra",
-        liveUrl: "#",
-        imageUrl: "https://images.unsplash.com/photo-1530319067432-f2a729c03db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-        features: ["Responsive Design", "3D Animations", "Interactive UI", "Modern Styling"]
-    }
+  { number: "01", title: "NepCart", description: "A production-oriented MERN e-commerce application with product browsing, cart management, order flow, responsive UI, REST APIs, and a MongoDB data layer.", tags: ["React", "Node.js", "MongoDB"], category: "Full-stack", accent: "mint", live: "https://npcart.vercel.app/" },
+  { number: "02", title: "Climate Intelligence Hub", description: "An AI-powered climate platform for real-time weather insights and generated environmental forecasts, built with event-driven workflows and an accessible React UI.", tags: ["React", "Python", "AI"], category: "AI / ML", accent: "orange", live: "https://climate-frontend-i8x6.onrender.com/", github: "https://github.com/Awdheshmishra/climate-change-predictor" },
+  { number: "03", title: "Fake News Detector", description: "A MERN platform with role-based access control, scalable REST APIs, centralized error handling, and Redux Toolkit state management.", tags: ["MERN", "Redux", "REST API"], category: "Full-stack", accent: "blue", github: "https://github.com/Awdheshmishra/fake-news-detector-1" },
 ];
 
-// Global Variables
-let currentProjectIndex = 0;
+const skills = [
+  ["Languages", ["C", "JavaScript (ES6+)", "TypeScript", "Python", "Java"]],
+  ["Frontend", ["React.js", "Next.js", "HTML5", "CSS3", "Tailwind CSS"]],
+  ["Backend & Data", ["Node.js", "Express.js", "REST APIs", "MongoDB", "MySQL"]],
+  ["Engineering", ["DSA", "OOP", "DBMS", "OS", "Low-Level Design", "Git", "Docker"]],
+];
 
-// ========================================
-// UTILITY FUNCTIONS
-// ========================================
+function Arrow() { return <span aria-hidden="true">↗</span>; }
 
-// Show notification
-function showNotification(message, type = 'success') {
-    const statusDiv = document.getElementById('submitStatus');
-    const statusIcon = document.getElementById('statusIcon');
-    const statusMessage = document.getElementById('statusMessage');
-    
-    statusDiv.className = `mb-6 p-4 rounded-lg flex items-center gap-3 ${
-        type === 'success' 
-            ? 'bg-green-600/20 border border-green-500/30 text-green-400' 
-            : 'bg-red-600/20 border border-red-500/30 text-red-400'
-    }`;
-    
-    statusIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
-    statusMessage.textContent = message;
-    statusDiv.classList.remove('hidden');
-    
-    // Hide after 5 seconds
-    setTimeout(() => {
-        statusDiv.classList.add('hidden');
-    }, 5000);
+function Nav() {
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState("about");
+
+  useEffect(() => {
+    const sections = ["about", "work", "skills", "contact"].map(id => document.getElementById(id));
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible) setActive(visible.target.id);
+    }, { rootMargin: "-25% 0px -60% 0px", threshold: [0, .25, .6] });
+    sections.forEach(section => section && observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  return <nav className="nav">
+    <a className="brand" href="#top"><span className="brand-mark">AM</span><span>Awdhesh Mishra</span></a>
+    <div className={`nav-links ${open ? "open" : ""}`}>
+      {["About", "Work", "Skills", "Contact"].map(item => <a className={active === item.toLowerCase() ? "active" : ""} key={item} href={`#${item.toLowerCase()}`} onClick={() => setOpen(false)}>{item}</a>)}
+    </div>
+    <a className="nav-cta" href={`mailto:${profile.email}`}>Let's talk <Arrow /></a>
+    <button className="menu-button" aria-label="Toggle navigation" onClick={() => setOpen(!open)}>{open ? "×" : "☰"}</button>
+  </nav>;
 }
 
-// Scroll to top
-function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// Toggle mobile menu
-function toggleMobileMenu() {
-    const mobileMenu = document.getElementById('mobileMenu');
-    const menuButton = document.getElementById('menuButton');
-    
-    if (mobileMenu.classList.contains('hidden')) {
-        mobileMenu.classList.remove('hidden');
-        menuButton.innerHTML = '<i class="fas fa-times text-xl"></i>';
-    } else {
-        mobileMenu.classList.add('hidden');
-        menuButton.innerHTML = '<i class="fas fa-bars text-xl"></i>';
-    }
-}
-
-// ========================================
-// PROJECT CAROUSEL FUNCTIONS
-// ========================================
-
-function showProject(index) {
-    if (!projects[index]) return;
-    
-    const project = projects[index];
-    const featuredProject = document.getElementById('featuredProject');
-    
-    featuredProject.innerHTML = `
-        <div class="grid grid-cols-1 lg:grid-cols-2">
-            <div class="relative h-64 lg:h-96">
-                <img src="${project.imageUrl}" alt="${project.title}" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-r from-slate-900/20 to-transparent"></div>
-            </div>
-            <div class="p-8 lg:p-12 flex flex-col justify-between">
-                <div>
-                    <div class="flex items-center gap-2 text-slate-400 text-sm mb-3">
-                        <i class="fas fa-calendar"></i>
-                        <span>${project.date}</span>
-                    </div>
-                    <h3 class="text-2xl lg:text-3xl font-bold text-white mb-4">${project.title}</h3>
-                    <p class="text-slate-300 leading-relaxed mb-6">${project.description}</p>
-                    
-                    <div class="mb-6">
-                        <h4 class="text-sm font-semibold text-slate-400 mb-3">Technologies Used</h4>
-                        <div class="flex flex-wrap gap-2">
-                            ${project.technologies.map(tech => 
-                                `<span class="bg-blue-600/20 text-blue-400 px-3 py-1 rounded-full text-sm font-medium">${tech}</span>`
-                            ).join('')}
-                        </div>
-                    </div>
-                    
-                    <div class="mb-8">
-                        <h4 class="text-sm font-semibold text-slate-400 mb-3">Key Features</h4>
-                        <ul class="space-y-2">
-                            ${project.features.map(feature => 
-                                `<li class="text-slate-300 text-sm flex items-center gap-2">
-                                    <div class="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
-                                    ${feature}
-                                </li>`
-                            ).join('')}
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="flex gap-4">
-                    <a href="${project.githubUrl}" target="_blank" class="flex items-center gap-2 bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg transition-colors duration-200">
-                        <i class="fab fa-github"></i>
-                        <span>Code</span>
-                    </a>
-                    ${project.liveUrl !== "#" ? 
-                        `<a href="${project.liveUrl}" target="_blank" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
-                            <i class="fas fa-external-link-alt"></i>
-                            <span>Live Demo</span>
-                        </a>` : ''
-                    }
-                </div>
-            </div>
+function Hero() {
+  return <header className="hero" id="top">
+    <div className="container hero-grid">
+      <div>
+        <p className="eyebrow">Computer Science · Lucknow, India</p>
+        <h1>Building digital products with <em>purpose.</em></h1>
+        <p className="hero-copy">I'm Awdhesh, a CSE student and aspiring software developer focused on thoughtful interfaces, strong fundamentals, and AI-driven solutions.</p>
+        <div className="hero-actions">
+          <a className="button primary" href="#work">See my work <Arrow /></a>
+          <a className="button secondary" href={profile.resume} download="Awdhesh-Mishra-Resume.pdf" target="_blank" rel="noreferrer">Download resume ↓</a>
         </div>
-    `;
-    
-    updateProjectIndicators();
-}
-
-function nextProject() {
-    currentProjectIndex = (currentProjectIndex + 1) % projects.length;
-    showProject(currentProjectIndex);
-}
-
-function prevProject() {
-    currentProjectIndex = (currentProjectIndex - 1 + projects.length) % projects.length;
-    showProject(currentProjectIndex);
-}
-
-function updateProjectIndicators() {
-    const indicatorsContainer = document.getElementById('projectIndicators');
-    indicatorsContainer.innerHTML = '';
-    
-    projects.forEach((_, index) => {
-        const indicator = document.createElement('div');
-        indicator.className = `project-indicator ${index === currentProjectIndex ? 'active' : ''}`;
-        indicator.onclick = () => {
-            currentProjectIndex = index;
-            showProject(currentProjectIndex);
-        };
-        indicatorsContainer.appendChild(indicator);
-    });
-}
-
-function loadProjectsGrid() {
-    const projectsGrid = document.getElementById('projectsGrid');
-    
-    projectsGrid.innerHTML = projects.map((project, index) => `
-        <div class="bg-slate-800/50 rounded-xl overflow-hidden backdrop-blur-sm border ${
-            index === currentProjectIndex 
-                ? 'border-blue-500 transform scale-105' 
-                : 'border-slate-700/50 hover:border-slate-600'
-        } transition-all duration-300 cursor-pointer" onclick="selectProject(${index})">
-            <div class="relative h-48">
-                <img src="${project.imageUrl}" alt="${project.title}" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
-            </div>
-            <div class="p-6">
-                <div class="flex items-center gap-2 text-slate-400 text-sm mb-2">
-                    <i class="fas fa-calendar"></i>
-                    <span>${project.date}</span>
-                </div>
-                <h3 class="text-xl font-bold text-white mb-2">${project.title}</h3>
-                <p class="text-slate-300 text-sm line-clamp-2 mb-4">
-                    ${project.description}
-                </p>
-                <div class="flex flex-wrap gap-2">
-                    ${project.technologies.slice(0, 3).map(tech => 
-                        `<span class="bg-slate-700 text-slate-300 px-2 py-1 rounded text-xs">${tech}</span>`
-                    ).join('')}
-                    ${project.technologies.length > 3 ? 
-                        `<span class="text-slate-400 text-xs">+${project.technologies.length - 3} more</span>` 
-                        : ''
-                    }
-                </div>
-            </div>
+        <div className="availability"><span className="pulse"></span> Open to opportunities & freelance projects</div>
+      </div>
+      <div className="hero-art">
+        <div className="photo-frame">
+          <img src="awdh.jpg" alt="Awdhesh Mishra" />
+          <div className="photo-caption"><span className="mono">PROFILE / 2026</span><span>Available</span></div>
         </div>
-    `).join('');
+        <div className="float-card bottom"><strong>01</strong><span>curious mind</span></div>
+      </div>
+    </div>
+  </header>;
 }
 
-function selectProject(index) {
-    currentProjectIndex = index;
-    showProject(currentProjectIndex);
-    loadProjectsGrid(); // Refresh grid to show selection
+function Stats({ solvedCount }) {
+  return <div className="stats"><div className="container stats-grid">
+    {[["2027", "B.Tech CSE graduation"], [solvedCount === null ? "..." : `${solvedCount}+`, "LeetCode problems"], ["03", "Production projects"], ["2026", "Web Developer internship"]].map(([value, label]) => <div className="stat" key={label}><strong>{value}</strong><span>{label}</span></div>)}
+  </div></div>;
 }
 
-// ========================================
-// CONTACT FORM
-// ========================================
+function About() {
+  return <section className="section" id="about"><div className="container about-grid">
+    <div className="section-heading"><p className="eyebrow">01 / About me</p><h2>Engineer by study. Builder by instinct.</h2></div>
+    <div className="about-copy">
+      <p>I'm a B.Tech Computer Science and Engineering undergraduate at Sr. Institute of Management and Technology, Lucknow, graduating in 2027. I build full-stack products with the MERN stack and enjoy solving real-world problems with clean, maintainable code.</p>
+      <p>During my Web Developer internship at Codec Technologies, I worked in a professional engineering environment, applying full-stack concepts to real project tasks and earning a Letter of Recommendation for my performance and dedication.</p>
+      <div className="principles">
+        <div className="principle"><strong>01 — 225+ problems solved</strong><span>Consistent LeetCode practice across arrays, trees, graphs, DP, and binary search.</span></div>
+        <div className="principle"><strong>02 — Lead and communicate</strong><span>Former School Captain with experience leading initiatives, presenting ideas, and collaborating through code reviews.</span></div>
+      </div>
+      <div className="resume-details">
+        <div><strong>Education</strong><span>B.Tech CSE · Sr. Institute of Management and Technology, Lucknow · 2023–2027</span></div>
+        <div><strong>Internship</strong><span>Web Developer Intern · Codec Technologies Pvt. Ltd. · Jun–Jul 2026</span></div>
+        <div><strong>Certifications</strong><span>Oracle Generative AI · Java Spring Boot · HTML & CSS · DSA (pwskills)</span></div>
+      </div>
+    </div>
+  </div></section>;
+}
 
-function handleContactForm(event) {
-    event.preventDefault();
-    
-    const form = event.target;
-    const formData = new FormData(form);
-    const data = {
-        name: formData.get('name'),
-        email: formData.get('email'),
-        subject: formData.get('subject'),
-        message: formData.get('message')
+function Work() {
+  const [filter, setFilter] = useState("All");
+  const filters = ["All", ...new Set(projects.map(project => project.category))];
+  const visibleProjects = filter === "All" ? projects : projects.filter(project => project.category === filter);
+
+  return <section className="section" id="work"><div className="container">
+    <div className="section-heading"><p className="eyebrow">02 / Selected work</p><h2>A few things I've been making.</h2><p>Projects that reflect my curiosity across software, automation, and interactive web experiences.</p></div>
+    <div className="filter-row" role="group" aria-label="Filter projects">{filters.map(item => <button className={`filter-button ${filter === item ? "selected" : ""}`} onClick={() => setFilter(item)} key={item}>{item}</button>)}</div>
+    <div className="project-grid">{visibleProjects.map(project => <article className="project-card" key={project.title}>
+      <div className={`project-visual ${project.accent}`}><span className="project-index mono">{project.number} / PROJECT</span><h3>{project.title}</h3></div>
+      <div className="project-body"><p>{project.description}</p><div className="tags">{project.tags.map(tag => <span className="tag" key={tag}>{tag}</span>)}</div><div className="project-links">{project.live && <a href={project.live} target="_blank" rel="noreferrer">Live project <Arrow /></a>}{project.github && <a href={project.github} target="_blank" rel="noreferrer">GitHub <Arrow /></a>}</div></div>
+    </article>)}</div>
+  </div></section>;
+}
+
+function Skills() {
+  return <section className="section skills-section" id="skills"><div className="container">
+    <div className="section-heading"><p className="eyebrow">03 / Toolkit</p><h2>Tools for turning ideas into something real.</h2><p>The technologies I use to build production-oriented products and keep learning every day.</p></div>
+    <div className="skills-grid">{skills.map(([title, list]) => <div className="skill-card" key={title}><h3>{title}</h3><div className="skill-list">{list.map(item => <span key={item}>{item}</span>)}</div></div>)}</div>
+  </div></section>;
+}
+
+function Contact() {
+  const [sent, setSent] = useState(false);
+  const submit = event => { event.preventDefault(); setSent(true); event.currentTarget.reset(); };
+  return <section className="section" id="contact"><div className="container contact-wrap">
+    <div><p className="eyebrow">04 / Contact</p><h2>Have a good idea? Let's make it happen.</h2><p>Whether you have a project in mind or just want to say hello, my inbox is open.</p><div className="contact-links"><a href={`mailto:${profile.email}`}>{profile.email} <Arrow /></a><a href={`tel:${profile.phone}`}>{profile.phone} <Arrow /></a><a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn <Arrow /></a><a href={profile.leetcode} target="_blank" rel="noreferrer">LeetCode <Arrow /></a></div></div>
+    <form className="contact-form" onSubmit={submit}><div className="form-row"><label>Name<input required name="name" placeholder="Your name" /></label><label>Email<input required type="email" name="email" placeholder="you@example.com" /></label></div><label>Message<textarea required name="message" placeholder="Tell me a little about your idea..."></textarea></label>{sent && <div className="form-status">Thanks! Your message is ready — I’ll get back to you soon.</div>}<button className="button primary" type="submit">Send message <Arrow /></button></form>
+  </div></section>;
+}
+
+function App() {
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [solvedCount, setSolvedCount] = useState(null);
+
+  useEffect(() => {
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add("is-visible");
+    }), { threshold: .12 });
+    document.querySelectorAll(".section, .stat, .project-card, .skill-card, .contact-form").forEach(element => revealObserver.observe(element));
+    const updateProgress = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(max > 0 ? (window.scrollY / max) * 100 : 0);
     };
-    
-    // Validate form data
-    if (!data.name || !data.email || !data.subject || !data.message) {
-        showNotification('Please fill in all required fields.', 'error');
-        return;
-    }
-    
-    // Email validation
-        // Email validation
-const email = data.email.trim(); // remove spaces
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-if (!emailRegex.test(email)) {
-    showNotification('Please enter a valid email address.', 'error');
-    return;
-}
-    
-    // Show loading state
-    const submitButton = document.getElementById('submitButton');
-    const originalHTML = submitButton.innerHTML;
-    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Sending...</span>';
-    submitButton.disabled = true;
-    
-    // Simulate sending message
-    setTimeout(() => {
-        // Reset button
-        submitButton.innerHTML = originalHTML;
-        submitButton.disabled = false;
-        
-        // Show success message
-        showNotification('Message sent successfully! Awdhesh will get back to you soon.', 'success');
-        
-        // Reset form
-        form.reset();
-        
-        // Log the message (for development)
-        console.log('Contact Form Submission:', data);
-    }, 2000);
-}
-
-// ========================================
-// HEADER SCROLL EFFECT
-// ========================================
-
-function handleHeaderScroll() {
-    const header = document.querySelector('header');
-    if (window.scrollY > 50) {
-        header.classList.add('bg-slate-900/95', 'backdrop-blur-md', 'border-b', 'border-slate-700/50');
-    } else {
-        header.classList.remove('bg-slate-900/95', 'backdrop-blur-md', 'border-b', 'border-slate-700/50');
-    }
-}
-
-// ========================================
-// SMOOTH SCROLLING
-// ========================================
-
-function setupSmoothScrolling() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-                
-                // Close mobile menu if open
-                const mobileMenu = document.getElementById('mobileMenu');
-                if (!mobileMenu.classList.contains('hidden')) {
-                    toggleMobileMenu();
-                }
-            }
-        });
-    });
-}
-
-// ========================================
-// ANIMATIONS
-// ========================================
-
-function setupScrollAnimations() {
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    updateProgress();
+    return () => {
+      revealObserver.disconnect();
+      window.removeEventListener("scroll", updateProgress);
     };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, observerOptions);
-    
-    // Observe all sections
-    document.querySelectorAll('section').forEach(section => {
-        section.style.opacity = '0';
-        section.style.transform = 'translateY(30px)';
-        section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(section);
-    });
+  }, []);
+
+  useEffect(() => {
+    const loadLeetCodeStats = async () => {
+      try {
+        const response = await fetch("https://alfa-leetcode-api.onrender.com/userProfile/awdheshmishra");
+        if (!response.ok) throw new Error(`LeetCode stats request failed with ${response.status}`);
+        const data = await response.json();
+        const count = Number(data.totalSolved);
+        if (!Number.isFinite(count)) throw new Error("LeetCode stats response did not include totalSolved");
+        setSolvedCount(count);
+      } catch (error) {
+        console.warn("Live LeetCode count unavailable; showing the resume snapshot instead.", error);
+        setSolvedCount(225);
+      }
+    };
+    loadLeetCodeStats();
+  }, []);
+
+  return <><div className="scroll-progress" style={{ width: `${scrollProgress}%` }} /><Nav /><Hero /><Stats solvedCount={solvedCount} /><main><About /><Work /><Skills /><Contact /></main><footer><div className="container footer-inner"><span>© 2026 Awdhesh Mishra</span><span className="mono">DESIGNED + BUILT WITH CARE</span><span><a href={profile.github} target="_blank" rel="noreferrer">GitHub</a> · <a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn</a> · <a href={profile.portfolio} target="_blank" rel="noreferrer">Portfolio</a></span></div></footer></>;
 }
 
-// ========================================
-// INITIALIZATION
-// ========================================
-
-function initPortfolio() {
-    console.log('Initializing Awdhesh Mishra Portfolio...');
-    
-    // Set up smooth scrolling
-    setupSmoothScrolling();
-    
-    // Set up header scroll effect
-    window.addEventListener('scroll', () => {
-        requestAnimationFrame(handleHeaderScroll);
-    });
-    
-    // Set up contact form
-    const contactForm = document.getElementById('contactForm');
-    if (contactForm) {
-        contactForm.addEventListener('submit', handleContactForm);
-    }
-    
-    // Initialize projects
-    if (projects.length > 0) {
-        showProject(0);
-        loadProjectsGrid();
-        
-        // Auto-rotate projects every 5 seconds
-        setInterval(nextProject, 5000);
-    }
-    
-    // Set up scroll animations
-    setupScrollAnimations();
-    
-    // Handle window resize
-    window.addEventListener('resize', () => {
-        const mobileMenu = document.getElementById('mobileMenu');
-        if (window.innerWidth > 768 && !mobileMenu.classList.contains('hidden')) {
-            toggleMobileMenu();
-        }
-    });
-    
-    // Handle keyboard navigation
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            const mobileMenu = document.getElementById('mobileMenu');
-            if (!mobileMenu.classList.contains('hidden')) {
-                toggleMobileMenu();
-            }
-        }
-        
-        if (e.key === 'ArrowLeft') {
-            prevProject();
-        } else if (e.key === 'ArrowRight') {
-            nextProject();
-        }
-    });
-    
-    console.log('Portfolio initialized successfully!');
-}
-
-// Initialize when DOM is loaded
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPortfolio);
-} else {
-    initPortfolio();
-}
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
