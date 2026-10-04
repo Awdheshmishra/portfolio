@@ -64,7 +64,7 @@ function Hero() {
       </div>
       <div className="hero-art">
         <div className="photo-frame">
-          <img src="awdh.jpg" alt="Awdhesh Mishra" />
+          <img src="image.png" alt="Awdhesh Mishra" />
           <div className="photo-caption"><span className="mono">PROFILE / 2026</span><span>Available</span></div>
         </div>
         <div className="float-card bottom"><strong>01</strong><span>curious mind</span></div>
