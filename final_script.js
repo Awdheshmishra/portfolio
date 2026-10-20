@@ -64,7 +64,8 @@ function Hero() {
       </div>
       <div className="hero-art">
         <div className="photo-frame">
-          <img src="profilepic.png" alt="Awdhesh Mishra" />
+          {/* <img src="profile" alt="Awdhesh Mishra" /> */}
+          <img src="profilepic.png" alt="awdhesh mishra" />
           <div className="photo-caption"><span className="mono">PROFILE / 2026</span><span>Available</span></div>
         </div>
         <div className="float-card bottom"><strong>01</strong><span>curious mind</span></div>
