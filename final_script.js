@@ -58,7 +58,7 @@ function Hero() {
         <p className="hero-copy">I'm Awdhesh, a CSE student and aspiring software developer focused on thoughtful interfaces, strong fundamentals, and AI-driven solutions.</p>
         <div className="hero-actions">
           <a className="button primary" href="#work">See my work <Arrow /></a>
-          <a className="button secondary" href={profile.resume} download="Awdhesh-Mishra-Resume.pdf" target="_blank" rel="noreferrer">Download resume ↓</a>
+          <a className="button secondary" href={profile.resume} download="awdheshmishra_SEA_updated.pdf" target="_blank" rel="noreferrer">Download resume ↓</a>
         </div>
         <div className="availability"><span className="pulse"></span> Open to opportunities & freelance projects</div>
       </div>
