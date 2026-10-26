@@ -5,7 +5,7 @@ const profile = {
   linkedin: "https://www.linkedin.com/in/awdhesh-mishra-09780932a",
   leetcode: "https://leetcode.com/u/awdheshmishra/",
   portfolio: "https://awdheshmishra.netlify.app/",
-  resume: "awdheshmishra.pdf",
+  resume: "awdheshmishra_SEA_updated.pdf",
   email: "awdheshmishra310@gmail.com",
   phone: "+91-6388573740",
 };
